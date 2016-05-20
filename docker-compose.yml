@@ -3,10 +3,11 @@ nginx:
     container_name: lamp-nginx
     ports:
       - "80:80"
+      - "443:443"
     links:
       - "php"
     volumes:
-      - /var/www:/var/www
+      - /var/www/logs/nginx:/var/log/nginx
 
 php:
     build: ./php
@@ -33,11 +34,15 @@ mysql:
 memcache:
     build: ./memcache
     container_name: lamp-memcache
+    volumes_from:
+          - data
     ports:
       - "11211:11211"
 
 redis:
     build: ./redis
     container_name: lamp-redis
+    volumes_from:
+      - data
     ports:
       - "6379:6379"
