@@ -24,6 +24,13 @@ RUN docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-di
         && docker-php-ext-install mbstring \
         && docker-php-ext-install mcrypt \
         && docker-php-ext-install pdo_mysql
+
+
+RUN curl https://pecl.php.net/get/redis-2.2.7.tgz \
+        && https://pecl.php.net/get/memcached-2.2.0.tgz \
+        && https://pecl.php.net/get/memcache-2.2.7.tgz
+
+
 RUN pecl install /home/memcached.tgz && echo "extension=memcached.so" > /usr/local/etc/php/conf.d/memcached.ini \
         && pecl install /home/memcache.tgz && echo "extension=memcache.so" > /usr/local/etc/php/conf.d/memcache.ini \
         && pecl install /home/redis.tgz && echo "extension=redis.so" > /usr/local/etc/php/conf.d/redis.ini
