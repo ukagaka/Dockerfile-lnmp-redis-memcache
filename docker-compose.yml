@@ -34,15 +34,11 @@ mysql:
 memcache:
     build: ./memcache
     container_name: lamp-memcache
-    volumes_from:
-          - data
     ports:
       - "11211:11211"
 
 redis:
     build: ./redis
     container_name: lamp-redis
-    volumes_from:
-      - data
     ports:
       - "6379:6379"
