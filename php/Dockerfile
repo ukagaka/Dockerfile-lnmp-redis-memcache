@@ -4,6 +4,7 @@ FROM php:5.6-fpm
 ADD sources.list    /etc/apt/sources.list
 RUN apt-get update && apt-get install -y \
         git \
+	wget \
         libgearman-dev \
         libmemcached-dev \
         libmcrypt-dev \
@@ -14,9 +15,6 @@ RUN apt-get update && apt-get install -y \
 
 
 # Install PHP extensions
-COPY memcached.tgz /home/memcached.tgz
-COPY redis.tgz /home/redis.tgz
-COPY memcache.tgz /home/memcache.tgz
 
 RUN docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
         && docker-php-ext-install zip \
@@ -25,15 +23,14 @@ RUN docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-di
         && docker-php-ext-install mcrypt \
         && docker-php-ext-install pdo_mysql
 
+RUN wget https://pecl.php.net/get/redis-2.2.7.tgz -O ~/redis.tgz \
+	&& wget https://pecl.php.net/get/memcached-2.2.0.tgz -O ~/memcached.tgz \
+	&& wget https://pecl.php.net/get/memcache-2.2.7.tgz -O ~/memcache.tgz
 
-RUN curl https://pecl.php.net/get/redis-2.2.7.tgz \
-        && https://pecl.php.net/get/memcached-2.2.0.tgz \
-        && https://pecl.php.net/get/memcache-2.2.7.tgz
 
-
-RUN pecl install /home/memcached.tgz && echo "extension=memcached.so" > /usr/local/etc/php/conf.d/memcached.ini \
-        && pecl install /home/memcache.tgz && echo "extension=memcache.so" > /usr/local/etc/php/conf.d/memcache.ini \
-        && pecl install /home/redis.tgz && echo "extension=redis.so" > /usr/local/etc/php/conf.d/redis.ini
+RUN pecl install ~/memcached.tgz && echo "extension=memcached.so" > /usr/local/etc/php/conf.d/memcached.ini \
+        && pecl install ~/memcache.tgz && echo "extension=memcache.so" > /usr/local/etc/php/conf.d/memcache.ini \
+        && pecl install ~/redis.tgz && echo "extension=redis.so" > /usr/local/etc/php/conf.d/redis.ini
 
 
 # PHP config
